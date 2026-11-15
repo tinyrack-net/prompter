@@ -115,7 +115,7 @@ jobs:
             -e PORT=4319 -e OUTLINE_URL=http://127.0.0.1:4320 \
             -e OUTLINE_API_KEY=test-api-key -e OUTLINE_WEBHOOK_SECRET=test-webhook-secret \
             prompter:ci
-          for attempt in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:4319/healthz >/dev/null 2>&1 \
               && curl -fsS -X POST http://127.0.0.1:4320/__test/health >/dev/null 2>&1; then
               break
