@@ -1,0 +1,450 @@
+/*
+ * IBM Plex Sans is the Tinyrack typeface; @tinyrack/ui ships no @font-face.
+ * KR/JP use the numbered entrypoints, which are split into unicode-range
+ * chunks so only the glyphs on screen are downloaded.
+ */
+@import "@fontsource-variable/ibm-plex-sans/wght.css";
+@import "@fontsource/ibm-plex-sans-kr/400.css";
+@import "@fontsource/ibm-plex-sans-kr/600.css";
+@import "@fontsource/ibm-plex-sans-jp/400.css";
+@import "@fontsource/ibm-plex-sans-jp/600.css";
+@import "tailwindcss";
+@import "@tinyrack/ui/core.css";
+@import "@tinyrack/ui/components/button.css";
+@import "@tinyrack/ui/components/drawer.css";
+@import "@tinyrack/ui/components/field.css";
+@import "@tinyrack/ui/components/fieldset.css";
+@import "@tinyrack/ui/components/icon-button.css";
+@import "@tinyrack/ui/components/input.css";
+@import "@tinyrack/ui/components/link-button.css";
+@import "@tinyrack/ui/components/native-select.css";
+@import "@tinyrack/ui/components/progress.css";
+@import "@tinyrack/ui/components/radio.css";
+@import "@tinyrack/ui/components/radio-group.css";
+@import "@tinyrack/ui/components/separator.css";
+@import "@tinyrack/ui/components/slider.css";
+@import "@tinyrack/ui/components/spinner.css";
+@import "@tinyrack/ui/components/switch.css";
+@import "@tinyrack/ui/components/text.css";
+@import "@tinyrack/ui/components/toolbar.css";
+
+:root {
+  /* Translucent surface for controls that float over the script. */
+  --floating-surface: color-mix(in srgb, var(--tinyrack-surface-muted) 55%, transparent);
+  --floating-surface-hover: color-mix(in srgb, var(--tinyrack-surface-muted) 85%, transparent);
+  --floating-blur: blur(var(--tinyrack-space-md));
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--tinyrack-font-body);
+}
+
+/* ---------- Settings ---------- */
+
+/*
+ * The content fills the whole side panel. Base UI swipes the drawer on any
+ * pointer drag that starts outside Drawer.Content, so on tall (fullscreen)
+ * screens the empty strip under the content dragged the whole panel sideways.
+ */
+.settings-content.settings-content {
+  box-sizing: border-box;
+  height: 100%;
+  max-height: none;
+}
+
+/* ---------- Launcher ---------- */
+
+.launcher {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tinyrack-space-xl);
+  max-width: var(--tinyrack-mdx-content-width);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: var(--tinyrack-space-2xl) var(--tinyrack-space-lg);
+}
+
+.launcher-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tinyrack-space-lg);
+}
+
+.launcher-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tinyrack-space-sm);
+}
+
+.launcher-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tinyrack-space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.launcher-item {
+  display: flex;
+  align-items: center;
+  gap: var(--tinyrack-space-xs);
+  min-width: 0;
+}
+
+.launcher-link {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--tinyrack-space-md);
+  min-width: 0;
+  padding: var(--tinyrack-space-sm) var(--tinyrack-space-md);
+  border-radius: var(--tinyrack-radius-md);
+  color: var(--tinyrack-text);
+  text-decoration: none;
+}
+
+.launcher-link:hover,
+.launcher-link:focus-visible {
+  background: var(--tinyrack-surface-hover);
+}
+
+.launcher-link:focus-visible {
+  outline: var(--tinyrack-border-width-strong) solid var(--tinyrack-focus);
+  outline-offset: var(--tinyrack-space-3xs);
+}
+
+.launcher-icon {
+  flex: none;
+  width: var(--tinyrack-space-lg);
+  height: var(--tinyrack-space-lg);
+  color: var(--tinyrack-text-muted);
+}
+
+.launcher-result-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ---------- Prompter ---------- */
+
+.prompter {
+  --prompter-font-size: var(--tinyrack-text-5xl);
+  --prompter-margin-x: 0;
+  --prompter-reading-line: 35%;
+  --prompter-reading-offset: 35cqh;
+  --prompter-tail-space: 65cqh;
+  --prompter-paragraph-gap: calc(var(--prompter-font-size) * var(--tinyrack-leading-lg) / 2);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--tinyrack-scrim-base);
+  color: var(--tinyrack-text);
+}
+
+.prompter-progress {
+  --tr-progress-track-height: var(--tinyrack-space-2xs);
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: var(--tinyrack-layer-chrome);
+}
+
+.prompter-scroller {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  /* Lets the text padding use cqh, i.e. a share of the scroller's height. */
+  container-type: size;
+  scrollbar-width: none;
+}
+
+.prompter-reading-line {
+  position: sticky;
+  top: var(--prompter-reading-line);
+  height: 0;
+  border-top: var(--tinyrack-border-width-default) dashed var(--tinyrack-primary-foreground);
+  opacity: var(--tinyrack-opacity-disabled);
+  pointer-events: none;
+}
+
+.prompter-text {
+  box-sizing: border-box;
+  /* % padding resolves against width, so the reading line offset uses cqh. */
+  padding-block: var(--prompter-reading-offset) var(--prompter-tail-space);
+  padding-inline: max(var(--prompter-margin-x), var(--tinyrack-space-lg));
+  font-size: var(--prompter-font-size);
+  font-weight: var(--tinyrack-weight-medium);
+  line-height: var(--tinyrack-leading-lg);
+}
+
+/*
+ * Keep words whole: never break inside a word. Korean breaks only at spaces;
+ * Japanese, which has no spaces, keeps its phrases together with
+ * word-break: auto-phrase where supported. A word longer than the line still
+ * wraps instead of overflowing.
+ */
+.prompter-text[data-wrap="words"] {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+@supports (word-break: auto-phrase) {
+  .prompter-text[data-wrap="words"][data-lang="ja"] {
+    word-break: auto-phrase;
+  }
+}
+
+/* Wrap anywhere: break at any character so every line is filled. */
+.prompter-text[data-wrap="anywhere"] {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  line-break: anywhere;
+}
+
+.prompter[data-mirror] .prompter-text {
+  transform: scaleX(-1);
+}
+
+.prompter-text > span {
+  color: var(--tinyrack-text);
+  transition: color var(--tinyrack-duration-fast) var(--tinyrack-ease-standard);
+}
+
+.prompter-text > span[data-past] {
+  color: var(--tinyrack-border-strong);
+}
+
+.prompter-word {
+  cursor: pointer;
+  border-radius: var(--tinyrack-radius-sm);
+}
+
+.prompter-word:hover {
+  background: var(--tinyrack-surface-hover);
+}
+
+.prompter-word[data-current] {
+  background: var(--tinyrack-primary);
+  color: var(--tinyrack-on-primary);
+  box-shadow: 0 0 0 var(--tinyrack-space-xs) var(--tinyrack-primary);
+}
+
+.prompter-text > .prompter-note {
+  color: var(--tinyrack-info-foreground);
+  font-style: italic;
+  font-weight: var(--tinyrack-weight-regular);
+}
+
+.prompter-line {
+  display: block;
+}
+
+.prompter-paragraph {
+  display: block;
+  /* Paragraph gap scales with the text size. */
+  height: var(--prompter-paragraph-gap);
+}
+
+/* ---------- Floating controls ---------- */
+
+.prompter-dock {
+  position: absolute;
+  inset-inline: 0;
+  bottom: max(var(--tinyrack-space-xl), env(safe-area-inset-bottom));
+  z-index: var(--tinyrack-layer-chrome);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.prompter-dock > * {
+  pointer-events: auto;
+}
+
+.prompter-toolbar.prompter-toolbar {
+  --tr-toolbar-background: var(--floating-surface);
+  --tr-toolbar-border: var(--tinyrack-border);
+  backdrop-filter: var(--floating-blur);
+  border-radius: var(--tinyrack-radius-full);
+  box-shadow: var(--tinyrack-shadow-raised);
+  padding: var(--tinyrack-space-xs) var(--tinyrack-space-sm);
+  opacity: var(--tinyrack-opacity-hover);
+  transition: opacity var(--tinyrack-duration-normal) var(--tinyrack-ease-standard);
+}
+
+.prompter-toolbar.prompter-toolbar:hover,
+.prompter-toolbar.prompter-toolbar:focus-within {
+  --tr-toolbar-background: var(--floating-surface-hover);
+  opacity: 1;
+}
+
+.prompter-toolbar .tr-toolbar-button {
+  border-radius: var(--tinyrack-radius-full);
+}
+
+.prompter-toolbar .tr-toolbar-button:hover {
+  background: var(--tinyrack-surface-hover);
+}
+
+.prompter-toolbar .prompter-mic {
+  background: var(--tinyrack-surface-hover);
+}
+
+.prompter-toolbar .prompter-mic[data-listening] {
+  background: var(--tinyrack-danger);
+  color: var(--tinyrack-on-danger);
+}
+
+.prompter-toolbar .tr-toolbar-button[data-disabled] {
+  opacity: var(--tinyrack-opacity-disabled);
+}
+
+.prompter-status {
+  position: absolute;
+  top: var(--tinyrack-space-lg);
+  left: var(--tinyrack-space-lg);
+  z-index: var(--tinyrack-layer-chrome);
+  display: flex;
+  align-items: center;
+  gap: var(--tinyrack-space-sm);
+  max-width: var(--tinyrack-overlay-width-sm);
+  padding: var(--tinyrack-space-xs) var(--tinyrack-space-md);
+  background: var(--floating-surface);
+  backdrop-filter: var(--floating-blur);
+  border-radius: var(--tinyrack-radius-full);
+  color: var(--tinyrack-text-muted);
+  /* Hover reveals the hint (title) for blocked or unsupported voice. */
+  pointer-events: auto;
+}
+
+.prompter-status-state {
+  flex: none;
+  color: inherit;
+}
+
+.prompter-status-dot {
+  flex: none;
+  width: var(--tinyrack-space-sm);
+  height: var(--tinyrack-space-sm);
+  border-radius: var(--tinyrack-radius-full);
+  background: var(--tinyrack-border-strong);
+}
+
+.prompter-status[data-state="listening"] .prompter-status-dot {
+  background: var(--tinyrack-success);
+}
+
+.prompter-status[data-state="interrupted"] {
+  color: var(--tinyrack-warning-foreground);
+}
+
+.prompter-status[data-state="interrupted"] .prompter-status-dot {
+  background: var(--tinyrack-warning-foreground);
+  animation: prompter-pulse var(--tinyrack-duration-loading) var(--tinyrack-ease-standard) infinite
+    alternate;
+}
+
+.prompter-status:is([data-state="denied"], [data-state="unsupported"]) {
+  color: var(--tinyrack-danger-foreground);
+}
+
+.prompter-status:is([data-state="denied"], [data-state="unsupported"]) .prompter-status-dot {
+  background: var(--tinyrack-danger-foreground);
+}
+
+@keyframes prompter-pulse {
+  to {
+    opacity: var(--tinyrack-opacity-disabled);
+  }
+}
+
+.prompter-heard {
+  min-width: 0;
+  max-width: var(--tinyrack-measure-xl);
+}
+
+/* Document title and links, top center. */
+.prompter-doc {
+  position: absolute;
+  top: var(--tinyrack-space-md);
+  inset-inline: 0;
+  z-index: var(--tinyrack-layer-chrome);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tinyrack-space-xs);
+  margin-inline: auto;
+  width: fit-content;
+  max-width: var(--tinyrack-overlay-width-md);
+  padding: var(--tinyrack-space-2xs) var(--tinyrack-space-xs);
+  background: var(--floating-surface);
+  backdrop-filter: var(--floating-blur);
+  border-radius: var(--tinyrack-radius-full);
+  opacity: var(--tinyrack-opacity-hover);
+}
+
+.prompter-doc:hover,
+.prompter-doc:focus-within {
+  opacity: 1;
+}
+
+.prompter-doc-title {
+  min-width: 0;
+  color: var(--tinyrack-text-muted);
+}
+
+.prompter-status[data-state="updated"] {
+  color: var(--tinyrack-info-foreground);
+}
+
+.prompter-status[data-state="updated"] .prompter-status-dot {
+  background: var(--tinyrack-info-foreground);
+}
+
+.prompter-status[data-state="sync-lost"] {
+  color: var(--tinyrack-warning-foreground);
+}
+
+.prompter-status[data-state="sync-lost"] .prompter-status-dot {
+  background: var(--tinyrack-warning-foreground);
+}
+
+.prompter-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tinyrack-space-md);
+  padding: var(--tinyrack-space-xl);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompter-text > span,
+  .prompter-toolbar.prompter-toolbar {
+    transition: none;
+  }
+
+  .prompter-status-dot {
+    animation: none;
+  }
+}
+
+/* The prompter root only receives focus programmatically; it needs no ring. */
+.prompter:focus {
+  outline: none;
+}

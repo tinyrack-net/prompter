@@ -1,0 +1,9 @@
+node_modules
+dist
+.react-router
+test-results
+playwright-report
+.git
+.github
+e2e
+*.md

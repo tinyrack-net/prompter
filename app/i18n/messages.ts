@@ -1,0 +1,251 @@
+import type { Language } from '~core/language.ts';
+import type { InterruptReason } from '~core/speech.ts';
+
+const en = {
+  appName: 'Prompter',
+
+  // Launcher
+  launcherTitle: 'Open an Outline document',
+  launcherHint: 'Search by title or paste a document link.',
+  searchLabel: 'Search or paste a link',
+  searchPlaceholder: 'Search documents or paste an Outline link…',
+  recentlyOpened: 'Recently opened',
+  recentlyUpdated: 'Recently updated in Outline',
+  searchResults: 'Results',
+  noResults: 'No documents found.',
+  searchFailed: 'Could not reach Outline. Check the server configuration.',
+  forget: 'Remove from recent',
+  updatedAt: (date: string) => `Updated ${date}`,
+  bookmarkletTitle: 'Open from Outline in one click',
+  bookmarkletHint:
+    'Drag this button to your bookmarks bar. Clicking it on an Outline document opens that document here.',
+  bookmarkletLabel: 'Open in Prompter',
+
+  // Prompter
+  backToLauncher: 'Choose another document',
+  openInOutline: 'Open in Outline',
+  liveUpdated: 'Updated from Outline',
+  connectionLost: 'Reconnecting to live updates…',
+  documentDeleted: 'This document was deleted or archived in Outline.',
+  documentUnavailable: 'This document could not be opened.',
+  documentUnavailableHint: 'It may not exist, or the configured API key cannot read it.',
+  emptyDocument: 'This document has no readable text yet.',
+
+  unsupportedBody:
+    'This browser does not support speech recognition. Use Chrome, Edge or Safari. You can still scroll with the arrow keys.',
+  micDeniedBody: 'Allow microphone access in your browser settings and try again.',
+  voiceInterrupted: {
+    network: 'Reconnecting…',
+    microphone: 'No microphone input…',
+    service: 'Reconnecting…',
+  } satisfies Record<InterruptReason, string>,
+  voiceDenied: 'Microphone blocked',
+  voiceUnsupported: 'Voice tracking unavailable',
+
+  settings: 'Settings',
+  settingsDescription: 'Changes are saved on this device.',
+  close: 'Close',
+  sectionLanguage: 'Language',
+  sectionDisplay: 'Display',
+  uiLanguage: 'Interface language',
+  speechLanguage: 'Speech language',
+  speechLanguageHint: 'Auto-detect picks the language from the document.',
+  languageAuto: 'Auto-detect',
+  languageAutoResolved: (name: string) => `Auto-detect (${name})`,
+  fontSize: 'Font size',
+  marginX: 'Left and right margin',
+  mirror: 'Mirror text',
+  mirrorHint: 'Flip horizontally for teleprompter glass.',
+  lineWrap: 'Line wrapping',
+  lineWrapOption: {
+    words: {
+      label: 'Keep words whole',
+      description: 'Lines break only between words. Easier to read.',
+    },
+    anywhere: {
+      label: 'Wrap anywhere',
+      description: 'Lines break at any character, so every line is filled.',
+    },
+  },
+  resetSettings: 'Reset to defaults',
+
+  playback: 'Playback controls',
+  restart: 'Restart',
+  previousWord: 'Previous word',
+  nextWord: 'Next word',
+  enterFullscreen: 'Enter fullscreen',
+  exitFullscreen: 'Exit fullscreen',
+  exitBrowserFullscreen: 'Press F11 to exit browser fullscreen',
+  listen: 'Start listening',
+  stopListening: 'Stop listening',
+  listening: 'Listening',
+  paused: 'Paused',
+  progress: 'Reading progress',
+  heard: 'Heard',
+};
+
+export type Messages = typeof en;
+
+const ko: Messages = {
+  appName: '프롬프터',
+
+  launcherTitle: 'Outline 문서 열기',
+  launcherHint: '제목으로 검색하거나 문서 링크를 붙여넣으세요.',
+  searchLabel: '검색 또는 링크 붙여넣기',
+  searchPlaceholder: '문서를 검색하거나 Outline 링크를 붙여넣으세요…',
+  recentlyOpened: '최근에 연 문서',
+  recentlyUpdated: 'Outline에서 최근 수정된 문서',
+  searchResults: '검색 결과',
+  noResults: '문서를 찾지 못했어요.',
+  searchFailed: 'Outline에 연결할 수 없어요. 서버 설정을 확인하세요.',
+  forget: '최근 목록에서 지우기',
+  updatedAt: (date) => `${date} 수정`,
+  bookmarkletTitle: 'Outline에서 바로 열기',
+  bookmarkletHint:
+    '이 버튼을 북마크바로 끌어다 놓으세요. Outline 문서에서 누르면 그 문서가 여기서 열려요.',
+  bookmarkletLabel: '프롬프터로 열기',
+
+  backToLauncher: '다른 문서 고르기',
+  openInOutline: 'Outline에서 열기',
+  liveUpdated: 'Outline에서 갱신됨',
+  connectionLost: '실시간 갱신에 다시 연결하는 중…',
+  documentDeleted: 'Outline에서 이 문서가 삭제되거나 보관됐어요.',
+  documentUnavailable: '이 문서를 열 수 없어요.',
+  documentUnavailableHint: '문서가 없거나, 설정된 API 키로 읽을 수 없는 문서예요.',
+  emptyDocument: '이 문서에는 아직 읽을 내용이 없어요.',
+
+  unsupportedBody:
+    '이 브라우저는 음성 인식을 지원하지 않아요. Chrome, Edge, Safari를 사용하세요. 화살표 키로는 계속 이동할 수 있어요.',
+  micDeniedBody: '브라우저 설정에서 마이크 접근을 허용한 뒤 다시 시도하세요.',
+  voiceInterrupted: {
+    network: '다시 연결하는 중…',
+    microphone: '마이크 입력 없음…',
+    service: '다시 연결하는 중…',
+  },
+  voiceDenied: '마이크 차단됨',
+  voiceUnsupported: '음성 추적 사용 불가',
+
+  settings: '설정',
+  settingsDescription: '변경 사항은 이 기기에 저장돼요.',
+  close: '닫기',
+  sectionLanguage: '언어',
+  sectionDisplay: '화면',
+  uiLanguage: '화면 언어',
+  speechLanguage: '음성 인식 언어',
+  speechLanguageHint: '자동 감지는 문서의 언어를 보고 골라요.',
+  languageAuto: '자동 감지',
+  languageAutoResolved: (name) => `자동 감지 (${name})`,
+  fontSize: '글자 크기',
+  marginX: '좌우 여백',
+  mirror: '좌우 반전',
+  mirrorHint: '프롬프터 유리에 비출 때 사용해요.',
+  lineWrap: '줄바꿈',
+  lineWrapOption: {
+    words: {
+      label: '단어 단위',
+      description: '단어 사이에서만 줄을 바꿔요. 읽기 편해요.',
+    },
+    anywhere: {
+      label: '글자 단위',
+      description: '어느 글자에서나 줄을 바꿔 한 줄을 꽉 채워요.',
+    },
+  },
+  resetSettings: '기본값으로 초기화',
+
+  playback: '재생 컨트롤',
+  restart: '처음부터',
+  previousWord: '이전 단어',
+  nextWord: '다음 단어',
+  enterFullscreen: '전체화면',
+  exitFullscreen: '전체화면 나가기',
+  exitBrowserFullscreen: '브라우저 전체화면은 F11로 나갈 수 있어요',
+  listen: '듣기 시작',
+  stopListening: '듣기 중지',
+  listening: '듣는 중',
+  paused: '일시정지',
+  progress: '읽은 정도',
+  heard: '인식된 말',
+};
+
+const ja: Messages = {
+  appName: 'プロンプター',
+
+  launcherTitle: 'Outline のドキュメントを開く',
+  launcherHint: 'タイトルで検索するか、ドキュメントのリンクを貼り付けてください。',
+  searchLabel: '検索またはリンクを貼り付け',
+  searchPlaceholder: 'ドキュメントを検索、または Outline のリンクを貼り付け…',
+  recentlyOpened: '最近開いたドキュメント',
+  recentlyUpdated: 'Outline で最近更新されたドキュメント',
+  searchResults: '検索結果',
+  noResults: 'ドキュメントが見つかりません。',
+  searchFailed: 'Outline に接続できません。サーバー設定を確認してください。',
+  forget: '最近の一覧から削除',
+  updatedAt: (date) => `${date} 更新`,
+  bookmarkletTitle: 'Outline からワンクリックで開く',
+  bookmarkletHint:
+    'このボタンをブックマークバーにドラッグしてください。Outline のドキュメントでクリックすると、ここで開きます。',
+  bookmarkletLabel: 'プロンプターで開く',
+
+  backToLauncher: '別のドキュメントを選ぶ',
+  openInOutline: 'Outline で開く',
+  liveUpdated: 'Outline から更新されました',
+  connectionLost: 'リアルタイム更新に再接続中…',
+  documentDeleted: 'このドキュメントは Outline で削除またはアーカイブされました。',
+  documentUnavailable: 'このドキュメントを開けません。',
+  documentUnavailableHint: 'ドキュメントが存在しないか、設定された API キーでは読めません。',
+  emptyDocument: 'このドキュメントにはまだ読める内容がありません。',
+
+  unsupportedBody:
+    'このブラウザは音声認識に対応していません。Chrome、Edge、Safari を使用してください。矢印キーでの移動は引き続き使えます。',
+  micDeniedBody: 'ブラウザの設定でマイクへのアクセスを許可してから、もう一度お試しください。',
+  voiceInterrupted: {
+    network: '再接続中…',
+    microphone: 'マイク入力なし…',
+    service: '再接続中…',
+  },
+  voiceDenied: 'マイクがブロックされています',
+  voiceUnsupported: '音声追跡は使えません',
+
+  settings: '設定',
+  settingsDescription: '変更はこのデバイスに保存されます。',
+  close: '閉じる',
+  sectionLanguage: '言語',
+  sectionDisplay: '表示',
+  uiLanguage: '表示言語',
+  speechLanguage: '音声認識の言語',
+  speechLanguageHint: '自動検出ではドキュメントの言語から選びます。',
+  languageAuto: '自動検出',
+  languageAutoResolved: (name) => `自動検出 (${name})`,
+  fontSize: '文字サイズ',
+  marginX: '左右の余白',
+  mirror: '左右反転',
+  mirrorHint: 'プロンプター用ガラスに映すときに使います。',
+  lineWrap: '改行',
+  lineWrapOption: {
+    words: {
+      label: '単語ごと',
+      description: '単語の間でのみ改行します。読みやすくなります。',
+    },
+    anywhere: {
+      label: '文字ごと',
+      description: 'どの文字でも改行し、各行をいっぱいに使います。',
+    },
+  },
+  resetSettings: '初期設定に戻す',
+
+  playback: '再生コントロール',
+  restart: '最初から',
+  previousWord: '前の単語',
+  nextWord: '次の単語',
+  enterFullscreen: '全画面表示',
+  exitFullscreen: '全画面表示を終了',
+  exitBrowserFullscreen: 'ブラウザの全画面表示は F11 で終了できます',
+  listen: '聞き取りを開始',
+  stopListening: '聞き取りを停止',
+  listening: '聞き取り中',
+  paused: '一時停止',
+  progress: '読んだ割合',
+  heard: '認識された言葉',
+};
+
+export const MESSAGES: Record<Language, Messages> = { en, ko, ja };
