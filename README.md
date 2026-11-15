@@ -45,6 +45,8 @@ In Outline, go to **Settings → Webhooks → New webhook**:
 
 Deliveries are verified with the `Outline-Signature` HMAC and rejected when older than five minutes. Outline refuses to call private IP addresses unless they are listed in its `ALLOWED_PRIVATE_IP_ADDRESSES` setting.
 
+> **Personal collections do not update live.** Outline never sends webhooks for documents in a Personal collection. Such documents open normally but only show changes after a reload. Keep scripts in a shared collection to get live updates.
+
 ## Development
 
 Requires Node.js 24 and pnpm.
