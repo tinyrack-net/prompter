@@ -212,6 +212,24 @@ test.describe('prompter', () => {
 });
 
 test.describe('live updates from Outline', () => {
+  test('recovers after the event stream fails with an error response', async ({ page }) => {
+    const doc = await createDoc('Demo script', SCRIPT_MD);
+    // As when the server restarts and cannot reach Outline: EventSource gives up on a 502.
+    await page.route('**/events', (route) =>
+      route.fulfill({ status: 502, contentType: 'application/json', body: '{}' }),
+    );
+    await page.goto(`/d/${doc.id}`);
+    const status = page.locator('.prompter-status');
+    await expect(status).toHaveAttribute('data-state', 'sync-lost');
+
+    await page.unroute('**/events');
+    await expect(status).not.toHaveAttribute('data-state', 'sync-lost', { timeout: 10_000 });
+
+    // The new stream delivers edits again.
+    await editDoc(doc.id, `${SCRIPT_MD}\n\nAdded after reconnecting.`);
+    await expect(page.locator('.prompter-text')).toContainText('Added after reconnecting.');
+  });
+
   test('a webhook updates the open document without losing the reading position', async ({
     page,
   }) => {
