@@ -4,7 +4,7 @@ import { markdownToScript } from './markdown.ts';
 import { parseScript } from './script.ts';
 
 describe('markdownToScript', () => {
-  it('turns blocks into paragraphs and drops formatting', () => {
+  it('turns blocks into paragraphs, drops headings and formatting', () => {
     const md = [
       '# Opening',
       '',
@@ -21,9 +21,7 @@ describe('markdownToScript', () => {
     ].join('\n');
     expect(markdownToScript(md)).toBe(
       [
-        'Opening',
         'Hello everyone, welcome to the show.',
-        'Part one',
         'first point',
         'second point',
         'nested point',
@@ -73,12 +71,13 @@ describe('markdownToScript', () => {
   it('produces line and paragraph breaks the prompter understands', () => {
     const tokens = parseScript(markdownToScript('# Title\n\nline one\\\nline two'));
     const breaks = tokens.filter((t) => t.kind === 'break').map((t) => t.paragraph);
-    expect(breaks).toEqual([true, false]);
+    expect(breaks).toEqual([false]);
   });
 
   it('returns an empty script for an empty document', () => {
     expect(markdownToScript('')).toBe('');
     expect(markdownToScript('\\\n\n---\n')).toBe('');
+    expect(markdownToScript('# Only a title\n\n## And a section')).toBe('');
   });
 });
 
@@ -86,8 +85,9 @@ describe('markdownToScript with a real Outline document', () => {
   const md = readFileSync(new URL('./__fixtures__/outline-sample.md', import.meta.url), 'utf8');
   const script = markdownToScript(md);
 
-  it('drops front matter code blocks and keeps headings as paragraphs', () => {
-    expect(script.startsWith('하드웨어\n\n오늘 가져온 것은')).toBe(true);
+  it('drops front matter code blocks and headings', () => {
+    expect(script.startsWith('오늘 가져온 것은')).toBe(true);
+    expect(script).not.toMatch(/^하드웨어$/m);
     expect(script).not.toContain('```');
     expect(script).not.toContain('updated:');
     expect(script).not.toMatch(/^#/m);

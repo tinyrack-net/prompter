@@ -134,13 +134,15 @@ test.describe('prompter', () => {
     await page.goto(`/d/${doc.urlId}`);
 
     await expect(page).toHaveTitle('Demo script · Prompter');
-    await expect(current(page)).toHaveText('Opening');
+    await expect(current(page)).toHaveText('Hello');
     const text = page.locator('.prompter-text');
     await expect(text).toContainText('Hello everyone and welcome to the show.');
     await expect(text).toContainText('Today we talk about teleprompters.');
+    // Headings are section titles, not part of the script.
+    await expect(text).not.toContainText('Opening');
     await expect(text).not.toContainText('**');
     await expect(text).not.toContainText('](');
-    await expect(page.locator('.prompter-paragraph')).toHaveCount(5);
+    await expect(page.locator('.prompter-paragraph')).toHaveCount(4);
 
     const outlineLink = page.getByRole('link', { name: 'Open in Outline' });
     await expect(outlineLink).toHaveAttribute('href', `${FAKE_OUTLINE}${doc.url}`);
@@ -150,7 +152,7 @@ test.describe('prompter', () => {
     const doc = await createDoc('Demo script', SCRIPT_MD);
     await page.goto(`/d/${doc.id}`);
     await toolbar(page).getByRole('button', { name: 'Start listening' }).click();
-    await say(page, 'opening hello everyone and welcome');
+    await say(page, 'hello everyone and welcome');
     await expect(current(page)).toHaveText('to');
   });
 
@@ -174,7 +176,7 @@ test.describe('prompter', () => {
     });
     const doc = await createDoc('Demo script', SCRIPT_MD);
     await page.goto(`/d/${doc.id}`);
-    await expect(current(page)).toHaveText('Opening');
+    await expect(current(page)).toHaveText('Hello');
 
     const offset = () =>
       page.evaluate(() => {
@@ -236,7 +238,7 @@ test.describe('live updates from Outline', () => {
     const doc = await createDoc('Demo script', SCRIPT_MD);
     await page.goto(`/d/${doc.id}`);
     await toolbar(page).getByRole('button', { name: 'Start listening' }).click();
-    await say(page, 'opening hello everyone and welcome to the show today we');
+    await say(page, 'hello everyone and welcome to the show today we');
     await expect(current(page)).toHaveText('talk');
 
     // Edits above and below the reader, made in Outline.

@@ -39,7 +39,7 @@ interface NumberRange {
 }
 
 export const RANGES = {
-  fontSize: { min: 24, max: 120, step: 2 },
+  fontSize: { min: 12, max: 120, step: 2 },
   marginX: { min: 0, max: 40, step: 1 },
   readingLine: { min: 10, max: 80, step: 5 },
 } as const satisfies Record<string, NumberRange>;

@@ -7,7 +7,7 @@ A voice-following teleprompter for [Outline](https://www.getoutline.com) documen
 - **Outline is the source of truth.** The prompter never edits text; it reads documents through the Outline API.
 - **Live updates.** An Outline webhook pushes every change to all open prompters within seconds over server-sent events. The reading position is kept: text is realigned around the word you are on.
 - **Launcher.** Search documents, see recently updated and recently opened ones, or paste an Outline link to open it directly. A bookmarklet opens the current Outline document in one click.
-- **Markdown to speech-friendly text.** Headings, paragraphs, list items, quotes and table rows become paragraphs; formatting, links, images and code are reduced to the words you read.
+- **Markdown to speech-friendly text.** Paragraphs, list items, quotes and table rows become paragraphs; headings are left out; formatting, links, images and code are reduced to the words you read.
 - **Voice tracking** with the browser's Web Speech API (Chrome, Edge, Safari), phrase-based matching, Korean particles and Japanese word segmentation.
 - **Settings** saved per browser: interface and speech language (auto-detect, English, Korean, Japanese), font size, left/right margin, reading line position, line wrapping and mirror mode.
 - Floating playback toolbar, fullscreen (also with `F` / `F11`) and keyboard shortcuts.

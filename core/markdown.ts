@@ -9,8 +9,9 @@ const parser = unified().use(remarkParse).use(remarkGfm);
  * Converts an Outline Markdown document into plain prompter text.
  *
  * Formatting is dropped; only the structure a reader needs is kept:
- * - block elements (paragraphs, headings, list items, quotes, table rows)
- *   become paragraphs separated by a blank line;
+ * - block elements (paragraphs, list items, quotes, table rows) become
+ *   paragraphs separated by a blank line;
+ * - headings are section titles, not part of the script, and are dropped;
  * - hard line breaks inside a block become single newlines;
  * - links keep their text, images and code blocks are removed.
  *
@@ -42,7 +43,6 @@ function normalizeOutline(markdown: string): string {
 function collectBlocks(node: RootContent, out: string[]): void {
   switch (node.type) {
     case 'paragraph':
-    case 'heading':
       out.push(inline(node));
       return;
     case 'blockquote':

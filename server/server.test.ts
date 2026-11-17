@@ -135,7 +135,7 @@ describe('DocumentHub', () => {
   it('fetches once, converts Markdown, and resolves urlIds to the same document', async () => {
     const { hub, calls } = setup();
     const byUrlId = await hub.get('AbCdEfGhIj');
-    expect(byUrlId.script).toBe('Intro\n\nHello everyone.');
+    expect(byUrlId.script).toBe('Hello everyone.');
     expect(byUrlId.outlineUrl).toBe('https://outline.test/doc/script-AbCdEfGhIj');
     hub.subscribe(byUrlId.id, () => {});
     await hub.get(byUrlId.id);
