@@ -154,6 +154,43 @@ test.describe('prompter', () => {
     await expect(current(page)).toHaveText('to');
   });
 
+  test('scrolls back to the current word from the toolbar', async ({ page }) => {
+    const long = Array.from({ length: 80 }, (_, i) => `Paragraph number ${i + 1}.`).join('\n\n');
+    const doc = await createDoc('Long script', long);
+    await page.goto(`/d/${doc.id}`);
+    await expect(current(page)).toHaveText('Paragraph');
+
+    const scroller = page.locator('.prompter-scroller');
+    await scroller.evaluate((el) => el.scrollTo({ top: el.scrollHeight }));
+    await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(500);
+
+    await toolbar(page).getByRole('button', { name: 'Scroll to current word' }).click();
+    await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeLessThan(50);
+  });
+
+  test('keeps the current word on the configured reading line', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('prompter:settings:v1', JSON.stringify({ readingLine: 60 }));
+    });
+    const doc = await createDoc('Demo script', SCRIPT_MD);
+    await page.goto(`/d/${doc.id}`);
+    await expect(current(page)).toHaveText('Opening');
+
+    const offset = () =>
+      page.evaluate(() => {
+        const scroller = document.querySelector('.prompter-scroller') as HTMLElement;
+        const line = document.querySelector('.prompter-reading-line') as HTMLElement;
+        const word = document.querySelector('[data-current]') as HTMLElement;
+        const top = scroller.getBoundingClientRect().top;
+        return {
+          line: (line.getBoundingClientRect().top - top) / scroller.clientHeight,
+          word: (word.getBoundingClientRect().top - top) / scroller.clientHeight,
+        };
+      });
+    await expect.poll(async () => (await offset()).line).toBeCloseTo(0.6, 1);
+    await expect.poll(async () => (await offset()).word).toBeCloseTo(0.6, 1);
+  });
+
   test('has no editing controls', async ({ page }) => {
     const doc = await createDoc('Demo script', SCRIPT_MD);
     await page.goto(`/d/${doc.id}`);

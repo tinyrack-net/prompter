@@ -24,6 +24,8 @@ export interface Settings {
   fontSize: number;
   /** Left and right margin of the prompter text, in % of the screen width. */
   marginX: number;
+  /** Where the current word stays, in % of the screen height from the top. */
+  readingLine: number;
   /** Mirror the prompter text horizontally for teleprompter glass. */
   mirror: boolean;
   /** Where prompter lines may wrap. */
@@ -39,6 +41,7 @@ interface NumberRange {
 export const RANGES = {
   fontSize: { min: 24, max: 120, step: 2 },
   marginX: { min: 0, max: 40, step: 1 },
+  readingLine: { min: 10, max: 80, step: 5 },
 } as const satisfies Record<string, NumberRange>;
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -46,6 +49,7 @@ export const DEFAULT_SETTINGS: Settings = {
   speechLanguage: 'auto',
   fontSize: 48,
   marginX: 8,
+  readingLine: 35,
   mirror: false,
   lineWrap: 'words',
 };
@@ -67,6 +71,7 @@ export function sanitizeSettings(input: unknown): Settings {
       : d.speechLanguage,
     fontSize: clampNumber(data.fontSize, RANGES.fontSize, d.fontSize),
     marginX: clampNumber(data.marginX, RANGES.marginX, d.marginX),
+    readingLine: clampNumber(data.readingLine, RANGES.readingLine, d.readingLine),
     mirror: typeof data.mirror === 'boolean' ? data.mirror : d.mirror,
     lineWrap: isLineWrap(data.lineWrap) ? data.lineWrap : d.lineWrap,
   };

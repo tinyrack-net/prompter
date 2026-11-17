@@ -2,6 +2,7 @@ import { TRToolbar } from '@tinyrack/ui/components/toolbar';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  LocateFixedIcon,
   MaximizeIcon,
   MicIcon,
   MicOffIcon,
@@ -18,6 +19,7 @@ interface PlaybackToolbarProps {
   onPrev: () => void;
   onToggle: () => void;
   onNext: () => void;
+  onScrollToCursor: () => void;
   onSettings: () => void;
   /** Omitted when the browser cannot go fullscreen (e.g. iPhone Safari). */
   fullscreen?: {
@@ -65,6 +67,13 @@ export function PlaybackToolbar(props: PlaybackToolbarProps) {
           onClick={props.onNext}
         >
           <ChevronRightIcon aria-hidden="true" />
+        </TRToolbar.Button>
+        <TRToolbar.Button
+          aria-label={t.scrollToCursor}
+          title={`${t.scrollToCursor} (C)`}
+          onClick={props.onScrollToCursor}
+        >
+          <LocateFixedIcon aria-hidden="true" />
         </TRToolbar.Button>
         <TRToolbar.Separator orientation="vertical" />
         {props.fullscreen ? (

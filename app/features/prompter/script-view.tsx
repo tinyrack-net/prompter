@@ -7,6 +7,10 @@ interface ScriptViewProps {
   cursor: number;
   language: string;
   wrap: LineWrap;
+  /** Reading line position, in % of the scroller height from the top. */
+  readingLine: number;
+  /** Changing this value scrolls the current word back to the reading line. */
+  scrollRequest?: number;
   onWordClick: (index: number) => void;
 }
 
@@ -14,7 +18,15 @@ interface ScriptViewProps {
  * Renders the script once and updates word states directly on the DOM, so a
  * cursor move costs O(distance moved) instead of re-rendering every word.
  */
-export function ScriptView({ tokens, cursor, language, wrap, onWordClick }: ScriptViewProps) {
+export function ScriptView({
+  tokens,
+  cursor,
+  language,
+  wrap,
+  readingLine,
+  scrollRequest,
+  onWordClick,
+}: ScriptViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const previous = useRef<number | null>(null);
 
@@ -41,7 +53,8 @@ export function ScriptView({ tokens, cursor, language, wrap, onWordClick }: Scri
     previous.current = null;
   }, [tokens]);
 
-  // Keep the current word on the reading line.
+  // Keep the current word on the reading line, and bring it back on request.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: scrollRequest is a trigger
   useEffect(() => {
     const root = containerRef.current;
     const scroller = root?.closest<HTMLElement>('[data-scroller]');
@@ -49,9 +62,9 @@ export function ScriptView({ tokens, cursor, language, wrap, onWordClick }: Scri
     const nodes = root.querySelectorAll<HTMLElement>('[data-index]');
     const target = nodes[Math.min(cursor, nodes.length - 1)];
     if (!target) return;
-    const line = scroller.clientHeight * 0.35;
+    const line = scroller.clientHeight * (readingLine / 100);
     scroller.scrollTo({ top: target.offsetTop - line, behavior: 'smooth' });
-  }, [cursor]);
+  }, [cursor, readingLine, scrollRequest]);
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: words are also reachable with the arrow keys

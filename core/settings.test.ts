@@ -55,6 +55,7 @@ describe('settings', () => {
         speechLanguage: 'ko',
         fontSize: 9999,
         marginX: -5,
+        readingLine: 99,
         lineWrap: 42,
         mirror: 'yes',
       }),
@@ -63,6 +64,7 @@ describe('settings', () => {
       speechLanguage: 'ko',
       fontSize: 120,
       marginX: 0,
+      readingLine: 80,
     });
   });
 

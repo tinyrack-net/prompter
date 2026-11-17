@@ -9,7 +9,7 @@ A voice-following teleprompter for [Outline](https://www.getoutline.com) documen
 - **Launcher.** Search documents, see recently updated and recently opened ones, or paste an Outline link to open it directly. A bookmarklet opens the current Outline document in one click.
 - **Markdown to speech-friendly text.** Headings, paragraphs, list items, quotes and table rows become paragraphs; formatting, links, images and code are reduced to the words you read.
 - **Voice tracking** with the browser's Web Speech API (Chrome, Edge, Safari), phrase-based matching, Korean particles and Japanese word segmentation.
-- **Settings** saved per browser: interface and speech language (auto-detect, English, Korean, Japanese), font size, left/right margin, line wrapping and mirror mode.
+- **Settings** saved per browser: interface and speech language (auto-detect, English, Korean, Japanese), font size, left/right margin, reading line position, line wrapping and mirror mode.
 - Floating playback toolbar, fullscreen (also with `F` / `F11`) and keyboard shortcuts.
 
 ## Keyboard shortcuts
@@ -19,6 +19,7 @@ A voice-following teleprompter for [Outline](https://www.getoutline.com) documen
 | `Space`     | Start / stop listening       |
 | `←` / `→`   | Move one word back / forward |
 | `Home`      | Restart from the beginning   |
+| `C`         | Scroll to the current word   |
 | `S` or `,`  | Open settings                |
 | `F` / `F11` | Toggle fullscreen            |
 

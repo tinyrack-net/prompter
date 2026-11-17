@@ -120,6 +120,15 @@ export function SettingsDrawer({
                   range={RANGES.marginX}
                   onChange={(marginX) => update({ marginX })}
                 />
+                <RangeField
+                  label={t.readingLine}
+                  name="readingLine"
+                  unit="%"
+                  description={t.readingLineHint}
+                  value={settings.readingLine}
+                  range={RANGES.readingLine}
+                  onChange={(readingLine) => update({ readingLine })}
+                />
                 <TRField.Root>
                   <TRFieldset.Root>
                     <TRFieldset.Legend>{t.lineWrap}</TRFieldset.Legend>
@@ -169,6 +178,7 @@ export function SettingsDrawer({
                   update({
                     fontSize: DEFAULT_SETTINGS.fontSize,
                     marginX: DEFAULT_SETTINGS.marginX,
+                    readingLine: DEFAULT_SETTINGS.readingLine,
                     mirror: DEFAULT_SETTINGS.mirror,
                     lineWrap: DEFAULT_SETTINGS.lineWrap,
                   })
@@ -232,6 +242,7 @@ function RangeField(props: {
   label: string;
   name: string;
   unit: string;
+  description?: string;
   value: number;
   range: { min: number; max: number; step: number };
   onChange: (value: number) => void;
@@ -257,6 +268,11 @@ function RangeField(props: {
         </TRSlider.Track>
         <TRSlider.Thumb aria-label={props.label} />
       </TRSlider.Control>
+      {props.description ? (
+        <TRText variant="caption" color="muted">
+          {props.description}
+        </TRText>
+      ) : null}
     </TRSlider.Root>
   );
 }

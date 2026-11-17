@@ -2,7 +2,7 @@ import { TRLinkButton } from '@tinyrack/ui/components/link-button';
 import { TRProgress } from '@tinyrack/ui/components/progress';
 import { TRText } from '@tinyrack/ui/components/text';
 import { ArrowLeftIcon, ExternalLinkIcon } from 'lucide-react';
-import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { SettingsDrawer } from '~/components/settings-drawer.tsx';
 import { useI18n } from '~/i18n/i18n.tsx';
@@ -27,6 +27,7 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
   const [settings] = useSettings();
   const [, setRecent] = useRecentDocuments();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [scrollRequest, setScrollRequest] = useState(0);
   const rootRef = useRef<HTMLElement>(null);
   const { document: doc, status: liveStatus, lastUpdate } = useLiveDocument(initial);
 
@@ -55,6 +56,7 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
   const voice = useVoiceCursor(tokens, locale);
   const fullscreen = useFullscreen();
   const { stop, toggle, next, prev, restart } = voice;
+  const scrollToCursor = useCallback(() => setScrollRequest((n) => n + 1), []);
 
   useEffect(() => {
     if (empty || liveStatus === 'deleted') stop();
@@ -71,6 +73,7 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
         next,
         prev,
         restart,
+        scrollToCursor,
         settings: () => setSettingsOpen(true),
         fullscreen: () => {
           if (fullscreen.supported && !fullscreen.browserManaged) void fullscreen.toggle();
@@ -86,12 +89,15 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
     // Capture phase: run before focused widgets (the toolbar) handle the key.
     window.addEventListener('keydown', onKey, { capture: true });
     return () => window.removeEventListener('keydown', onKey, { capture: true });
-  }, [settingsOpen, empty, toggle, next, prev, restart, fullscreen]);
+  }, [settingsOpen, empty, toggle, next, prev, restart, scrollToCursor, fullscreen]);
 
   const done = countSpoken(tokens, voice.cursor);
   const style = {
     '--prompter-font-size': `${settings.fontSize}px`,
     '--prompter-margin-x': `${settings.marginX}vw`,
+    '--prompter-reading-line': `${settings.readingLine}%`,
+    '--prompter-reading-offset': `${settings.readingLine}cqh`,
+    '--prompter-tail-space': `${100 - settings.readingLine}cqh`,
   } as CSSProperties;
 
   return (
@@ -131,6 +137,8 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
             cursor={voice.cursor}
             language={speechLanguage}
             wrap={settings.lineWrap}
+            readingLine={settings.readingLine}
+            scrollRequest={scrollRequest}
             onWordClick={voice.jumpTo}
           />
         </div>
@@ -176,6 +184,7 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
         onPrev={prev}
         onToggle={toggle}
         onNext={next}
+        onScrollToCursor={scrollToCursor}
         onSettings={() => setSettingsOpen(true)}
         fullscreen={
           fullscreen.supported
@@ -199,7 +208,7 @@ export function PrompterPage({ initial }: { initial: PrompterDocument }) {
 }
 
 type PrompterActions = Record<
-  'toggle' | 'next' | 'prev' | 'restart' | 'settings' | 'fullscreen',
+  'toggle' | 'next' | 'prev' | 'restart' | 'scrollToCursor' | 'settings' | 'fullscreen',
   () => void
 >;
 
@@ -215,6 +224,9 @@ function keyAction(key: string, actions: PrompterActions): (() => void) | null {
       return actions.prev;
     case 'Home':
       return actions.restart;
+    case 'c':
+    case 'C':
+      return actions.scrollToCursor;
     case ',':
     case 's':
     case 'S':
